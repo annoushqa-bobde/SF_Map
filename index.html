@@ -781,9 +781,6 @@ function updateCounts(counts) {
   };
   Object.entries(map).forEach(([key, [headId, filterId]]) => {
     const v = counts[key] ?? counts[key.charAt(0).toUpperCase() + key.slice(1)] ?? 0;
-    document.getElementById(headId).textContent  = v;
-    document.getElementById(filterId).textContent = v;
-  });
 }
 
 // ── Load data ─────────────────────────────────────────
