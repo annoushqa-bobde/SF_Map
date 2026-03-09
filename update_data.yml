@@ -1,0 +1,35 @@
+name: Update SF Live Data
+
+on:
+  schedule:
+    - cron: '0 * * * *'  # Every hour
+  workflow_dispatch:       # Manual trigger button in GitHub UI
+
+permissions:
+  contents: write
+
+jobs:
+  update-data:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install dependencies
+        run: pip install requests
+
+      - name: Fetch fresh SF data
+        run: python fetch_data.py
+
+      - name: Commit and push updated data
+        run: |
+          git config --local user.email "sfpulse-bot@github.com"
+          git config --local user.name "SF Pulse Bot"
+          git add data/sf_live.json
+          git diff --staged --quiet || git commit -m "🔄 Data update $(date -u '+%Y-%m-%d %H:%M UTC')"
+          git push
